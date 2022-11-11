@@ -28,7 +28,7 @@ jobs:
       - name: docker login, build and push
         run: |
           az acr login -n ${{ secrets.ACR }}
-          docker build ./target -t ${{ secrets.ACR }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          docker build . -t ${{ secrets.ACR }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
           docker push ${{ secrets.ACR }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
         env:
           IMAGE_NAME: scaffold
