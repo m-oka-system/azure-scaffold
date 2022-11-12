@@ -45,5 +45,6 @@ jobs:
         with:
           app-name: "tf-stg-app"
           slot-name: "production"
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
           # publish-profile: ${{ secrets.AzureAppService_PublishProfile_1cf9a08885374cfeb0551b41fc49cab6 }}
-          images: "epaasrepo.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_aec737c58fff40c4ae557713063af83f }}/scaffold:${{ github.sha }}"
+          images: "epaasrepo.azurecr.io/scaffold:${{ github.sha }}"
