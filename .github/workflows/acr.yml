@@ -22,10 +22,13 @@ jobs:
 
     steps:
       # checkout the repo
-      - name: Checkout Github Action
+      - name: Checkout to the branch
         uses: actions/checkout@v2
 
-      - name: Az CLI login
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Azure Login
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}

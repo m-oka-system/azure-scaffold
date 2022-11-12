@@ -30,3 +30,7 @@
 .terraform
 terraform.tfvars
 *.pem
+
+# Githubactions(local debug using act)
+.env
+.secrets
