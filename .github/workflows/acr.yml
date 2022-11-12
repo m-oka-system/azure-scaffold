@@ -16,28 +16,32 @@ permissions:
 jobs:
   build:
     runs-on: "ubuntu-latest"
+    env:
+      IMAGE_NAME: scaffold
+      AZURE_WEBAPP_NAME: tf-stg-app
 
     steps:
+      # checkout the repo
+      - name: Checkout Github Action
       - uses: actions/checkout@v2
+
+      - name: Az CLI login
       - uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: docker login, build and push
+      - name: Build and push image
         run: |
-          az acr login -n ${{ secrets.ACR }}
-          docker build . -t ${{ secrets.ACR }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
-          docker push ${{ secrets.ACR }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
-        env:
-          IMAGE_NAME: scaffold
+          az acr login -n ${{ secrets.AZURE_REPO_NAME }}
+          docker build . -t ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          docker push ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "tf-stg-app"
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           slot-name: "production"
-          # publish-profile: ${{ secrets.AzureAppService_PublishProfile_1cf9a08885374cfeb0551b41fc49cab6 }}
-          images: "epaasrepo.azurecr.io/scaffold:${{ github.run_number }}"
+          images: "${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}"
