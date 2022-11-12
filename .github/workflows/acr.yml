@@ -18,7 +18,7 @@ jobs:
     runs-on: "ubuntu-latest"
     env:
       IMAGE_NAME: scaffold
-      AZURE_WEBAPP_NAME: tf-stg-app
+      AZURE_WEBAPP_NAME: tf-stg-app2
 
     steps:
       - name: Checkout to the branch
