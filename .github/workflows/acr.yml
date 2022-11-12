@@ -33,7 +33,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ github.ref }}-${{ github.sha }}
+          key: refs/head/main
           restore-keys: |
             ${{ github.ref }}-${{ github.sha }}
             ${{ github.ref }}
