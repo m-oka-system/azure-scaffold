@@ -21,7 +21,6 @@ jobs:
       AZURE_WEBAPP_NAME: tf-stg-app
 
     steps:
-      # checkout the repo
       - name: Checkout to the branch
         uses: actions/checkout@v2
 
@@ -35,16 +34,30 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build and push image
+      - name: Login to ACR
         run: |
           az acr login -n ${{ secrets.AZURE_REPO_NAME }}
-          docker build . -t ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
-          docker push ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
 
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+      - name: Build and push image
+        uses: docker/build-push-action@v2
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          slot-name: "production"
-          images: "${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}"
+          push: true
+          tags: ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          file: ./Dockerfile
+          context: ./
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # - name: Build and push image
+      #   run: |
+      #     az acr login -n ${{ secrets.AZURE_REPO_NAME }}
+      #     docker build . -t ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+      #     docker push ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+
+      # - name: Deploy to Azure Web App
+      #   id: deploy-to-webapp
+      #   uses: azure/webapps-deploy@v2
+      #   with:
+      #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
+      #     slot-name: "production"
+      #     images: "${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}"
