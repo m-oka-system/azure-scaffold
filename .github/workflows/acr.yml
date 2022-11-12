@@ -31,20 +31,11 @@ jobs:
         env:
           IMAGE_NAME: scaffold
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: "production"
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: "tf-stg-app"
           slot-name: "production"
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
           # publish-profile: ${{ secrets.AzureAppService_PublishProfile_1cf9a08885374cfeb0551b41fc49cab6 }}
           images: "epaasrepo.azurecr.io/scaffold:${{ github.sha }}"
