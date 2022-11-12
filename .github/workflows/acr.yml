@@ -28,9 +28,9 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Cache Docker layers
+        id: cache-go
         uses: actions/cache@v2
         with:
-          id: cache-go
           path: /tmp/.buildx-cache
           key: ${{ github.ref }}-${{ github.sha }}
           restore-keys: |
