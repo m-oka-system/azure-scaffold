@@ -37,6 +37,10 @@ jobs:
             ${{ github.ref }}
             refs/head/main
 
+      - name: after cache
+        run: |
+          echo "=====${{steps.cache-go.outputs.cache-hit}}====="
+
       - name: Azure Login
         uses: azure/login@v1
         with:
