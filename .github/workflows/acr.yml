@@ -39,12 +39,12 @@ jobs:
           az acr login -n ${{ secrets.AZURE_REPO_NAME }}
 
       - name: Build and push image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
+          context: .
           push: true
           tags: ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
           file: ./Dockerfile
-          context: ./
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
