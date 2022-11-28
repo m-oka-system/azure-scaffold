@@ -16,9 +16,9 @@ permissions:
 jobs:
   build:
     runs-on: "ubuntu-latest"
-    env:
-      IMAGE_NAME: scaffold
-      AZURE_WEBAPP_NAME: tf-stg-app2
+    # env:
+    #   IMAGE_NAME: hogehoge
+    #   AZURE_WEBAPP_NAME: fugafuga
 
     steps:
       - name: Checkout to the branch
@@ -60,7 +60,7 @@ jobs:
           context: .
           push: true
           builder: ${{ steps.buildx.outputs.name }}
-          tags: ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          tags: ${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ secrets.IMAGE_NAME }}:${{ github.run_number }}
           file: ./Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
@@ -70,10 +70,10 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      # - name: Deploy to Azure Web App
-      #   id: deploy-to-webapp
-      #   uses: azure/webapps-deploy@v2
-      #   with:
-      #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
-      #     slot-name: "production"
-      #     images: "${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}"
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          slot-name: "production"
+          images: "${{ secrets.AZURE_REPO_NAME }}.azurecr.io/${{ secrets.IMAGE_NAME }}:${{ github.run_number }}"
