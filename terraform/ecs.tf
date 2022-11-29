@@ -47,15 +47,15 @@ resource "aws_ecs_task_definition" "this" {
 
         secrets = [
           {
-            name      = "MYSQL_ROOT_USER"
+            name      = "DB_USERNAME"
             valueFrom = aws_ssm_parameter.ecs_db_user.name
           },
           {
-            name      = "MYSQL_ROOT_PASSWORD"
+            name      = "DB_PASSWORD"
             valueFrom = aws_ssm_parameter.ecs_db_password.name
           },
           {
-            name      = "RDS_HOST_NAME"
+            name      = "DB_HOST"
             valueFrom = aws_ssm_parameter.ecs_db_host_name.name
           },
           {
